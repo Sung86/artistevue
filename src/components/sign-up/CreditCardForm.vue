@@ -10,7 +10,7 @@
     </v-row>
     <br />
     <!-- Credit Card Form  -->
-    <v-form ref="form" :disabled="flipping">
+    <v-form ref="form" :disabled="flipping" lazy-validation>
       Card Number
       <v-text-field
         v-model="creditCardForm.cardNumber"

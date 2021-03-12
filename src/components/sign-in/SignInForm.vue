@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-form ref="form" v-model="valid" lazy-validation class="pa-5">
+  <v-card outlined rounded="xl" style="border:4px solid grey">
+    <v-form ref="form" lazy-validation class="pa-5">
       <v-row justify="end">
         <v-btn icon @click="hideSignInForm()">
           <v-icon>mdi-close</v-icon>
@@ -34,7 +34,6 @@
 <script>
 export default {
   data: () => ({
-    valid: false,
     email: null,
     emailRules: [
       v => !!v || "Email is required",
@@ -43,7 +42,9 @@ export default {
     password: null,
     passwordRules: [
       v => !!v || "Password is required",
-      v => (v && v.length >= 8) || "Min 8 characters"
+      v =>
+        (v && v.length >= 8 && v.length <= 20) ||
+        "Password must be between 8 and 20 characters"
     ],
     showPassword: false
   }),
@@ -54,8 +55,24 @@ export default {
     },
     signIn() {
       if (this.validate()) {
-        //sign in
-        console.log("valid");
+        const loginDetails = { email: this.email, password: this.password };
+        this.$store
+          .dispatch("firebase/authentication/signIn", {
+            loginDetails
+          })
+          .then(async response => {
+            if (response.status === "success") {
+              await this.$store.commit("user/setIsSignIn", true);
+              const user = JSON.parse(JSON.stringify(response.user));
+              await this.$store.commit("user/setAccountInfo", user);
+              this.reset();
+              this.hideSignInForm();
+              this.routeTo("Landing");
+              alert("login success");
+            } else {
+              alert("login fail. Invalid account");
+            }
+          });
       } else {
         //error
         console.log("invalid");
@@ -67,9 +84,7 @@ export default {
     reset() {
       return this.$refs.form.reset();
     },
-    // resetValidation() {
-    //   return this.$refs.form.resetValidation();
-    // },
+
     routeTo(routeName) {
       this.reset();
       if (this.$route.name != routeName) this.$router.push({ name: routeName });

@@ -1,15 +1,15 @@
 <template>
   <v-card class="overflow-hidden">
     <v-app-bar color="white" elevate-on-scroll fixed>
-      <v-app-bar-nav-icon
-        @click="(showSideBar = !showSideBar), $emit('emitSideBar', showSideBar)"
-        class="hidden-sm-and-up"
-      ></v-app-bar-nav-icon>
       <v-toolbar-title style="cursor:pointer" @click="routeTo('Landing')">
         Artistevue
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <div class="hidden-xs-only">
+      <v-app-bar-nav-icon
+        v-if="isUserSignIn"
+        @click="(showSideBar = !showSideBar), $emit('emitSideBar', showSideBar)"
+      ></v-app-bar-nav-icon>
+      <div v-else>
         <v-btn class="text-capitalize" text @click="routeTo('SignUp')">
           Sign up
         </v-btn>
@@ -41,6 +41,11 @@ export default {
     },
     bindSignInForm(newValue) {
       this.showSignInForm = newValue;
+    }
+  },
+  computed: {
+    isUserSignIn() {
+      return this.$store.getters["user/getIsSignIn"];
     }
   },
   methods: {

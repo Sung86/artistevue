@@ -7,11 +7,7 @@
       :bindSignInForm="showSignInForm"
     />
     <v-main class="pt-15">
-      <Sidebar
-        v-if="showSideBar && !isOnSmAndUp"
-        @emitSideBar="bindSideBar"
-        class="mx-auto"
-      />
+      <Sidebar v-if="showSideBar" @emitSideBar="bindSideBar" class="mx-auto" />
 
       <v-dialog
         v-model="showSignInForm"

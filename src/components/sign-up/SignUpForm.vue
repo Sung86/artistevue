@@ -127,7 +127,7 @@ export default {
             const user = response.user;
             await this.$store
               .dispatch("firebase/firestore/createUser", { userData, user })
-              .then(response => {
+              .then(async response => {
                 if (response.status !== "fail") {
                   this.$router.push({ name: "Landing" }).then(() => {
                     alert("You have successfully signed up!");

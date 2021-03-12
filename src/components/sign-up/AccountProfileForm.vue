@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Account Profile</h1>
-    <v-form ref="form" v-model="valid" lazy-validation>
+    <v-form ref="form" lazy-validation>
       Username
       <v-text-field
         v-model="profileForm.username"
@@ -70,7 +70,6 @@ export default {
     }
   },
   data: () => ({
-    valid: true,
     profileForm: {
       username: null,
       email: null,

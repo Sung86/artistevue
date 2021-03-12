@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>Address</div>
-    <v-form ref="form">
+    <v-form ref="form" lazy-validation>
       Address Line 1
       <v-text-field
         v-model="addressForm.addressLine1"

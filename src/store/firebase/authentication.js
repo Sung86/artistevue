@@ -22,6 +22,31 @@ const actions = {
         return { status: "fail", errorMessage, errorCode };
       });
   },
+  signIn: async ({}, payload) => {
+    const loginDetails = payload.loginDetails;
+    const email = loginDetails.email;
+    const password = loginDetails.password;
+    return await auth
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(async () => {
+        return await auth
+          .signInWithEmailAndPassword(email, password)
+          .then(userCredential => {
+            const user = userCredential.user;
+            return { status: "success", user };
+          })
+          .catch(error => {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            return { status: "fail", errorMessage, errorCode };
+          });
+      })
+      .catch(error => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        return { status: "fail", errorMessage, errorCode };
+      });
+  },
   signOut: async ({}) => {
     await auth.signOut().catch(error => {
       return { status: "fail", errorMessage: error };
