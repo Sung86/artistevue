@@ -35,7 +35,8 @@
         v-model="profileForm.confirmPassword"
         :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
         :type="showPassword ? 'text' : 'password'"
-        :rules="passwordRules"
+        :rules="confirmPasswordRules"
+        :error-messages="confirmPasswordErrMsg"
         @click:append="showPassword = !showPassword"
         outlined
         required
@@ -46,7 +47,28 @@
 
 <script>
 export default {
-  props: [],
+  props: ["isCollectForms", "isValidateForms"],
+  watch: {
+    isCollectForms(newVal) {
+      if (newVal === true) this.$emit("profileDetails", this.profileForm);
+    },
+    isValidateForms(newVal) {
+      if (newVal === true) {
+        let hasAnyError = null;
+        const arePasswordsMatch =
+          this.profileForm.password === this.profileForm.confirmPassword;
+        if (this.$refs.form.validate() && arePasswordsMatch) {
+          this.confirmPasswordErrMsg = [];
+          hasAnyError = true;
+        } else {
+          hasAnyError = false;
+          if (!arePasswordsMatch)
+            this.confirmPasswordErrMsg = ["Both passwords must match"];
+        }
+        this.$emit("hasAnyError", hasAnyError);
+      }
+    }
+  },
   data: () => ({
     valid: true,
     profileForm: {
@@ -57,31 +79,29 @@ export default {
     },
     usernameRules: [
       v => !!v || "Username is required",
-      v => (v && v.length <= 20) || "Username must be less than 20 characters"
+      v =>
+        (v && v.length >= 4 && v.length <= 20) ||
+        "Username must be between 4 and 20 characters"
     ],
     emailRules: [
       v => !!v || "Email address is required",
       v => /.+@.+\..+/.test(v) || "Email must be valid"
     ],
-
     passwordRules: [
       v => !!v || "Password is required",
-      v => (v && v.length >= 8) || "Min 8 characters"
+      v =>
+        (v && v.length >= 8 && v.length <= 20) ||
+        "Password must be between 8 and 20 characters"
     ],
+    confirmPasswordRules: [
+      v => !!v || "Confirm Password is required",
+      v =>
+        (v && v.length >= 8 && v.length <= 20) ||
+        "Password must be between 8 and 20 characters"
+    ],
+    confirmPasswordErrMsg: [],
 
     showPassword: false
-  }),
-
-  methods: {
-    validate() {
-      this.$refs.form.validate();
-    },
-    reset() {
-      this.$refs.form.reset();
-    },
-    resetValidation() {
-      this.$refs.form.resetValidation();
-    }
-  }
+  })
 };
 </script>
