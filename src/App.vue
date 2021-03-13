@@ -9,7 +9,12 @@
     <v-main class="pt-15">
       <SnackBar />
       <Loading />
-      <Sidebar v-if="showSideBar" @emitSideBar="bindSideBar" class="mx-auto" />
+      <Sidebar
+        v-if="showSideBar"
+        :showSideBar="showSideBar"
+        @emitSideBar="bindSideBar"
+        class="mx-auto"
+      />
       <v-dialog
         v-model="showSignInForm"
         overlay-opacity="0.75"

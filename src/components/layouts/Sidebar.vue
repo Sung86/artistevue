@@ -1,11 +1,16 @@
 <template>
-  <v-card height="100%" width="100%" rounded="0">
+  <v-card height="100%" width="100%" rounded="0" style="position:absolute">
     <v-navigation-drawer
-      absolute
+      fixed
       dark
-      src="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
-      width="100%"
-      permanent
+      temporary
+      color="white"
+      style="border:1px solid black"
+      overlay-opacity="0.8"
+      right
+      expand-on-hover
+      v-model="bindSideBar"
+      class="pt-10"
     >
       <v-list nav>
         <v-list-item
@@ -16,19 +21,39 @@
           @click="$emit('emitSideBar', false)"
         >
           <v-list-item-icon>
-            <v-icon>{{ icon }}</v-icon>
+            <v-icon color="blue">{{ icon }}</v-icon>
           </v-list-item-icon>
-
           <v-list-item-content>
-            <v-list-item-title>{{ title }}</v-list-item-title>
+            <v-list-item-title>
+              <span class="black--text">{{ title }}</span>
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
+
+      <template v-slot:append>
+        <v-list nav>
+          <v-list-item @click="$emit('emitSideBar', false)">
+            <v-list-item-icon>
+              <v-icon color="grey">mdi-close-thick</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>
+                <v-btn width="100%" class="text-capitalize" color="grey">
+                  Close
+                </v-btn>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </template>
     </v-navigation-drawer>
   </v-card>
 </template>
 <script>
 export default {
+  props: ["showSideBar"],
   data: () => ({
     items: [
       ["mdi-account", "Account", "/account"],
@@ -37,6 +62,16 @@ export default {
       ["mdi-package-variant", "My Orders", "/my-orders"],
       ["mdi-logout-variant", "Sign Out", "sign-out"]
     ]
-  })
+  }),
+  computed: {
+    bindSideBar: {
+      get: function() {
+        return this.showSideBar;
+      },
+      set: function(value) {
+        this.$emit("emitSideBar", value);
+      }
+    }
+  }
 };
 </script>
