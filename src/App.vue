@@ -7,8 +7,8 @@
       :bindSignInForm="showSignInForm"
     />
     <v-main class="pt-15">
+      <SnackBar />
       <Sidebar v-if="showSideBar" @emitSideBar="bindSideBar" class="mx-auto" />
-
       <v-dialog
         v-model="showSignInForm"
         overlay-opacity="0.75"
@@ -37,6 +37,7 @@ export default {
     Header: () => import("@/components/layouts/Header"),
     Footer: () => import("@/components/layouts/Footer"),
     Sidebar: () => import("@/components/layouts/Sidebar"),
+    SnackBar: () => import("@/components/layouts/SnackBar"),
     SignInForm: () => import("@/components/sign-in/SignInForm")
   },
   data: () => ({
@@ -53,9 +54,6 @@ export default {
     }
   },
   methods: {
-    say() {
-      alert("helo");
-    },
     bindSideBar(e) {
       this.showSideBar = e;
     },
@@ -76,5 +74,8 @@ export default {
 .text-shadow {
   text-shadow: -1px -1px 0 #827b7b80, 1px -1px 0 #827b7b80, -1px 1px 0 #827b7b80,
     1px 1px 0 #827b7b80;
+}
+* {
+  font-family: "Pacifico";
 }
 </style>

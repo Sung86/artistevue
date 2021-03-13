@@ -11,6 +11,7 @@
         :rules="emailRules"
         label="Email"
         required
+        clearable
       />
       <v-text-field
         v-model="password"
@@ -20,6 +21,7 @@
         label="Passowrd"
         @click:append="showPassword = !showPassword"
         required
+        clearable
       />
       <div class="mt-5">
         <v-btn color="success" width="100%" @click="signIn()" class="mb-5">
@@ -50,13 +52,24 @@ export default {
   }),
 
   methods: {
+    showSnackBarMessage(message, messageColour) {
+      let snackBar = JSON.parse(
+        JSON.stringify(this.$store.getters["snackBar/getSnackBar"])
+      );
+      snackBar.message = message;
+      snackBar.colour = messageColour;
+      snackBar.isShow = true;
+      this.$store.commit("snackBar/setSnackBar", snackBar);
+    },
     hideSignInForm() {
       this.$emit("emitSignInForm", false);
     },
-    signIn() {
-      if (this.validate()) {
+    async signIn() {
+      let message = "";
+      let messageColour = "";
+      if (await this.validate()) {
         const loginDetails = { email: this.email, password: this.password };
-        this.$store
+        await this.$store
           .dispatch("firebase/authentication/signIn", {
             loginDetails
           })
@@ -68,15 +81,19 @@ export default {
               this.reset();
               this.hideSignInForm();
               this.routeTo("Landing");
-              alert("login success");
+
+              message = "You've successfully signed in!";
+              messageColour = "success";
             } else {
-              alert("login fail. Invalid account");
+              message = "Invalid account!";
+              messageColour = "error";
             }
           });
       } else {
-        //error
-        console.log("invalid");
+        message = "Please enter properly!";
+        messageColour = "error";
       }
+      this.showSnackBarMessage(message, messageColour);
     },
     validate() {
       return this.$refs.form.validate();

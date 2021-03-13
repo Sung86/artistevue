@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>Address</div>
+    <h1>Address</h1>
     <v-form ref="form" lazy-validation>
       Address Line 1
       <v-text-field

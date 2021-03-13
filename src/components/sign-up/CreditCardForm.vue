@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Credit Card Detail</h1>
+    <h1>Credit Card</h1>
     <!-- Credit Card Animation-->
     <v-row justify="center">
       <Flipper :flipped="flipped" width="500px" height="250px">

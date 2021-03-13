@@ -39,7 +39,7 @@
         <v-btn
           class="text-capitalize ml-3"
           text
-          color="blue darken-1"
+          color="blue darken-2"
           width="100%"
           @click="(isNotNowButtonClicked = true), nextStep()"
           v-if="currentStep == 2"
@@ -52,18 +52,19 @@
         <v-btn
           class="text-capitalize"
           text
-          color="blue darken-1"
+          color="blue darken-2"
           width="100%"
           @click="backStep()"
+          v-if="currentStep >= 1"
         >
           Back
         </v-btn>
       </v-col>
-      <v-col cols="6">
+      <v-col :cols="currentStep == 0 ? 12 : 6">
         <v-btn
           class="text-capitalize"
           text
-          color="blue darken-1"
+          color="blue darken-2"
           width="100%"
           @click="nextStep()"
           v-if="currentStep <= 2"
@@ -101,8 +102,17 @@ export default {
     }
   },
   methods: {
+    showSnackBarMessage(message, messageColour) {
+      let snackBar = JSON.parse(
+        JSON.stringify(this.$store.getters["snackBar/getSnackBar"])
+      );
+      snackBar.message = message;
+      snackBar.colour = messageColour;
+      snackBar.isShow = true;
+      this.$store.commit("snackBar/setSnackBar", snackBar);
+    },
     hasAnyError(val) {
-      this.isFormValid = val; //false = got error = invalid form
+      this.isFormValid = val;
       this.isValidateForms = false;
     },
     collectProfileDetails(val) {
@@ -117,8 +127,10 @@ export default {
       this.creditCardDetails = val;
       this.isCollectForms = false;
     },
-    signUp(userData) {
-      this.$store
+    async signUp(userData) {
+      let message = "";
+      let messageColour = "";
+      await this.$store
         .dispatch("firebase/authentication/signUp", {
           profile: userData.profile
         })
@@ -130,20 +142,23 @@ export default {
               .then(async response => {
                 if (response.status !== "fail") {
                   this.$router.push({ name: "Landing" }).then(() => {
-                    alert("You have successfully signed up!");
+                    message = "You've successfully signed up!";
+                    messageColour = "success";
                   });
                 } else {
-                  alert("Fail to create");
+                  message =
+                    "Sign up process occurs errors. Please try again later.";
+                  messageColour = "error";
                 }
               });
           } else {
-            console.log("I'm here");
-            alert(
+            message =
               "Fail to sign up. Please try again later." +
-                " You may have already signed up before."
-            );
+              " You may have already signed up before.";
+            messageColour = "error";
           }
         });
+      this.showSnackBarMessage(message, messageColour);
     },
     validateForms() {
       this.isValidateForms = true;
@@ -155,7 +170,7 @@ export default {
         }
       } else {
         this.isNotNowButtonClicked = false;
-        this.isFormValid = true; //false = got error = invalid form
+        this.isFormValid = true;
         this.isValidateForms = false;
       }
       if (this.isFormValid === true) {
