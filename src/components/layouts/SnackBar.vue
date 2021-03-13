@@ -9,7 +9,7 @@
     :left="position === 'left'"
     :multi-line="isMultiLine"
     elevation="24"
-    rounded="lg"
+    rounded="xl"
   >
     <v-row justify="center">
       <p class="text-h5">{{ message }}</p>

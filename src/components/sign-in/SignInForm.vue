@@ -36,6 +36,7 @@
 <script>
 export default {
   data: () => ({
+    isOnSignIn: false,
     email: null,
     emailRules: [
       v => !!v || "Email is required",
@@ -50,7 +51,15 @@ export default {
     ],
     showPassword: false
   }),
-
+  watch: {
+    isOnSignIn(newVal) {
+      let loading = JSON.parse(
+        JSON.stringify(this.$store.getters["loading/getLoading"])
+      );
+      loading.isShow = newVal;
+      this.$store.commit("loading/setLoading", loading);
+    }
+  },
   methods: {
     showSnackBarMessage(message, messageColour) {
       let snackBar = JSON.parse(
@@ -68,6 +77,7 @@ export default {
       let message = "";
       let messageColour = "";
       if (await this.validate()) {
+        this.isOnSignIn = true;
         const loginDetails = { email: this.email, password: this.password };
         await this.$store
           .dispatch("firebase/authentication/signIn", {
@@ -82,17 +92,20 @@ export default {
               this.hideSignInForm();
               this.routeTo("Landing");
 
-              message = "You've successfully signed in!";
+              message = "You've successfully sign in!";
               messageColour = "success";
             } else {
               message = "Invalid account!";
               messageColour = "error";
             }
           });
+
+        this.isOnSignIn = false;
       } else {
         message = "Please enter properly!";
         messageColour = "error";
       }
+
       this.showSnackBarMessage(message, messageColour);
     },
     validate() {

@@ -5,7 +5,6 @@ import "firebase/auth";
 let auth = firebase.auth();
 
 const actions = {
-  // eslint-disable-next-line no-unused-vars
   signUp: async ({}, payload) => {
     const email = payload.profile.email;
     const password = payload.profile.password;

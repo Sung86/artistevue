@@ -1,16 +1,6 @@
 <template>
   <v-card class="pa-10">
     <!-- Forms -->
-    <v-overlay :value="isGoingToNextStep">
-      <v-row justify="center">
-        <v-progress-linear
-          style="width:80vw; border:1px solid black"
-          height="15"
-          indeterminate
-          color="cyan"
-        ></v-progress-linear>
-      </v-row>
-    </v-overlay>
     <AccountProfileForm
       v-if="currentStep == 0"
       @profileDetails="collectProfileDetails"
@@ -99,6 +89,13 @@ export default {
     isFormValid(newVal) {
       if (newVal) this.nextStep();
       else this.isFormValid = null;
+    },
+    isGoingToNextStep(newVal) {
+      let loading = JSON.parse(
+        JSON.stringify(this.$store.getters["loading/getLoading"])
+      );
+      loading.isShow = newVal;
+      this.$store.commit("loading/setLoading", loading);
     }
   },
   methods: {

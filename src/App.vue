@@ -8,6 +8,7 @@
     />
     <v-main class="pt-15">
       <SnackBar />
+      <Loading />
       <Sidebar v-if="showSideBar" @emitSideBar="bindSideBar" class="mx-auto" />
       <v-dialog
         v-model="showSignInForm"
@@ -38,6 +39,7 @@ export default {
     Footer: () => import("@/components/layouts/Footer"),
     Sidebar: () => import("@/components/layouts/Sidebar"),
     SnackBar: () => import("@/components/layouts/SnackBar"),
+    Loading: () => import("@/components/layouts/Loading"),
     SignInForm: () => import("@/components/sign-in/SignInForm")
   },
   data: () => ({

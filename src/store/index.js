@@ -5,6 +5,7 @@ import authentication from "./firebase/authentication";
 import firestore from "./firebase/firestore";
 import user from "./user";
 import snackBar from "./snackBar";
+import loading from "./loading";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -12,6 +13,7 @@ export default new Vuex.Store({
   modules: {
     user,
     snackBar,
+    loading,
     firebase: {
       namespaced: true,
       modules: {
