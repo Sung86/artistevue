@@ -6,7 +6,6 @@ import vuetify from "./plugins/vuetify";
 
 Vue.config.productionTip = false;
 document.title = "Artistevue";
-
 new Vue({
   router,
   store,

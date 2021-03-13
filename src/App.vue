@@ -36,6 +36,7 @@
 export default {
   name: "App",
   created() {
+    this.$store.dispatch("firebase/authentication/listenToAuthStateChanged");
     window.addEventListener("resize", this.handleWindowResize);
     this.handleWindowResize();
   },

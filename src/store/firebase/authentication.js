@@ -5,6 +5,19 @@ import "firebase/auth";
 let auth = firebase.auth();
 
 const actions = {
+  listenToAuthStateChanged: async ({ commit }) => {
+    await auth.onAuthStateChanged(async user => {
+      if (user) {
+        if (user.metadata.lastSignInTime === user.metadata.creationTime) {
+          auth.signOut();
+        } else {
+          commit("user/setIsSignIn", true, { root: true });
+          user = JSON.parse(JSON.stringify(user));
+          commit("user/setAccountInfo", user, { root: true });
+        }
+      }
+    });
+  },
   signUp: async ({}, payload) => {
     const email = payload.profile.email;
     const password = payload.profile.password;

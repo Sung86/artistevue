@@ -10,9 +10,8 @@
       right
       expand-on-hover
       v-model="bindSideBar"
-      class="pt-10"
     >
-      <v-list nav>
+      <v-list nav class="mt-15">
         <v-list-item
           v-for="([icon, title, path], i) in items"
           :key="i"
@@ -21,7 +20,7 @@
           @click="$emit('emitSideBar', false)"
         >
           <v-list-item-icon>
-            <v-icon color="blue">{{ icon }}</v-icon>
+            <v-icon color="blue" size="35">{{ icon }}</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>
