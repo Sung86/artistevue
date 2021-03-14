@@ -86,4 +86,8 @@ export default {
 * {
   font-family: "Pacifico";
 }
+.rm-border-vtextfield > .v-input__control > .v-input__slot:before,
+.rm-border-vtextfield > .v-input__control > .v-input__slot:after {
+  border: none;
+}
 </style>

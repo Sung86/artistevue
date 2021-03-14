@@ -68,17 +68,20 @@
 </template>
 <script>
 export default {
-  props: ["isCollectForms", "isValidateForms"],
+  props: ["isCollectForm", "isValidateForm", "creditCardDetails"],
+  mounted() {
+    this.creditCardForm = this.creditCardDetails;
+  },
   components: {
     CardFront: () => import("@/components/credit-card/CardFront"),
     CardBack: () => import("@/components/credit-card/CardBack"),
     Flipper: () => import("vue-flipper")
   },
   watch: {
-    isCollectForms(newVal) {
+    isCollectForm(newVal) {
       if (newVal === true) this.$emit("creditCardDetails", this.creditCardForm);
     },
-    isValidateForms(newVal) {
+    isValidateForm(newVal) {
       if (newVal === true) {
         const hasAnyError = this.$refs.form.validate();
         this.$emit("hasAnyError", hasAnyError);

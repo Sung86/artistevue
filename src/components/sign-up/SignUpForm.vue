@@ -5,22 +5,25 @@
       v-if="currentStep == 0"
       @profileDetails="collectProfileDetails"
       @hasAnyError="hasAnyError"
-      :isCollectForms="isCollectForms"
-      :isValidateForms="isValidateForms"
+      :isCollectForm="isCollectForm"
+      :isValidateForm="isValidateForm"
+      :profileDetails="profileDetails"
     />
     <AddressForm
       v-else-if="currentStep == 1"
       @addressDetails="collectAddressDetails"
       @hasAnyError="hasAnyError"
-      :isCollectForms="isCollectForms"
-      :isValidateForms="isValidateForms"
+      :isCollectForm="isCollectForm"
+      :isValidateForm="isValidateForm"
+      :addressDetails="addressDetails"
     />
     <CreditCardForm
       v-else-if="currentStep == 2"
       @creditCardDetails="collectCreditCardDetails"
       @hasAnyError="hasAnyError"
-      :isCollectForms="isCollectForms"
-      :isValidateForms="isValidateForms"
+      :isCollectForm="isCollectForm"
+      :isValidateForm="isValidateForm"
+      :creditCardDetails="creditCardDetails"
     />
 
     <!-- Current Sign Up Progression's Buttons  -->
@@ -77,28 +80,51 @@ export default {
   data: () => ({
     currentStep: 0,
     isGoingToNextStep: false,
-    isCollectForms: false,
-    isValidateForms: false,
+    isCollectForm: false,
+    isValidateForm: false,
     isFormValid: null,
     isNotNowButtonClicked: false,
-    profileDetails: {},
-    addressDetails: {},
-    creditCardDetails: {}
+    profileDetails: {
+      username: null,
+      email: null,
+      password: null,
+      confirmPassword: null
+    },
+    addressDetails: {
+      addressLine: null,
+      city: null,
+      state: null,
+      zip: null,
+      country: null
+    },
+    creditCardDetails: {
+      cardNumber: "",
+      cardHolder: "",
+      expireMonth: "",
+      expireYear: "",
+      cvv: ""
+    }
   }),
   watch: {
     isFormValid(newVal) {
       if (newVal) this.nextStep();
       else this.isFormValid = null;
     },
+    isNotNowButtonClicked(newVal) {
+      this.showLoading(newVal);
+    },
     isGoingToNextStep(newVal) {
-      let loading = JSON.parse(
-        JSON.stringify(this.$store.getters["loading/getLoading"])
-      );
-      loading.isShow = newVal;
-      this.$store.commit("loading/setLoading", loading);
+      this.showLoading(newVal);
     }
   },
   methods: {
+    showLoading(isShow) {
+      let loading = JSON.parse(
+        JSON.stringify(this.$store.getters["loading/getLoading"])
+      );
+      loading.isShow = isShow;
+      this.$store.commit("loading/setLoading", loading);
+    },
     showSnackBarMessage(message, messageColour) {
       let snackBar = JSON.parse(
         JSON.stringify(this.$store.getters["snackBar/getSnackBar"])
@@ -110,23 +136,21 @@ export default {
     },
     hasAnyError(val) {
       this.isFormValid = val;
-      this.isValidateForms = false;
+      this.isValidateForm = false;
     },
     collectProfileDetails(val) {
       this.profileDetails = val;
-      this.isCollectForms = false;
+      this.isCollectForm = false;
     },
     collectAddressDetails(val) {
       this.addressDetails = val;
-      this.isCollectForms = false;
+      this.isCollectForm = false;
     },
     collectCreditCardDetails(val) {
       this.creditCardDetails = val;
-      this.isCollectForms = false;
+      this.isCollectForm = false;
     },
     async signUp(userData) {
-      let message = "";
-      let messageColour = "";
       await this.$store
         .dispatch("firebase/authentication/signUp", {
           profile: userData.profile
@@ -139,48 +163,47 @@ export default {
               .then(async response => {
                 if (response.status !== "fail") {
                   this.$router.push({ name: "Landing" }).then(() => {
-                    message = "You've successfully signed up!";
-                    messageColour = "success";
+                    const message = "You've successfully signed up!";
+                    const messageColour = "success";
+                    this.showSnackBarMessage(message, messageColour);
                   });
                 } else {
-                  message =
+                  const message =
                     "Sign up process occurs errors. Please try again later.";
-                  messageColour = "error";
+                  const messageColour = "error";
+                  this.showSnackBarMessage(message, messageColour);
                 }
               });
           } else {
-            message =
+            const message =
               "Fail to sign up. Please try again later." +
               " You may have already signed up before.";
-            messageColour = "error";
+            const messageColour = "error";
+            this.showSnackBarMessage(message, messageColour);
           }
         });
-      this.showSnackBarMessage(message, messageColour);
     },
     validateForms() {
-      this.isValidateForms = true;
+      this.isValidateForm = true;
     },
     nextStep() {
       if (!this.isNotNowButtonClicked) {
-        if (this.isValidateForms === false && this.isFormValid === null) {
+        if (this.isValidateForm === false && this.isFormValid === null) {
           this.validateForms();
         }
       } else {
-        this.isNotNowButtonClicked = false;
         this.isFormValid = true;
-        this.isValidateForms = false;
+        this.isValidateForm = false;
       }
       if (this.isFormValid === true) {
-        this.isCollectForms = true;
+        this.isCollectForm = true;
         this.isGoingToNextStep = true;
-
         //set time to allow form details to be collected
         setTimeout(() => {
           if (this.currentStep == 2) {
             const profile = this.profileDetails;
             const address = this.addressDetails;
             const creditCard = this.creditCardDetails;
-
             const userData = {
               profile,
               address,
@@ -191,6 +214,7 @@ export default {
           } else {
             this.currentStep++;
           }
+          this.isNotNowButtonClicked = false;
           this.isGoingToNextStep = false;
         }, 1000);
       }

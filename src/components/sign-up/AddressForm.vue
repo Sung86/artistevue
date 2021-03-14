@@ -2,19 +2,14 @@
   <div>
     <h1>Address</h1>
     <v-form ref="form" lazy-validation>
-      Address Line 1
+      Address Line
       <v-text-field
-        v-model="addressForm.addressLine1"
-        :rules="addressLine1Rules"
+        v-model="addressForm.addressLine"
+        :rules="addressLineRules"
         required
         outlined
       />
-      Address Line 2
-      <v-text-field
-        v-model="addressForm.addressLine2"
-        :rules="addressLine2Rules"
-        outlined
-      />
+
       City
       <v-text-field
         v-model="addressForm.city"
@@ -50,12 +45,15 @@
 
 <script>
 export default {
-  props: ["isCollectForms", "isValidateForms"],
+  props: ["isCollectForm", "isValidateForm", "addressDetails"],
+  mounted() {
+    this.addressForm = this.addressDetails;
+  },
   watch: {
-    isCollectForms(newVal) {
+    isCollectForm(newVal) {
       if (newVal === true) this.$emit("addressDetails", this.addressForm);
     },
-    isValidateForms(newVal) {
+    isValidateForm(newVal) {
       if (newVal === true) {
         const hasAnyError = this.$refs.form.validate();
         this.$emit("hasAnyError", hasAnyError);
@@ -63,17 +61,13 @@ export default {
     }
   },
   data: () => ({
-    addressLine1Rules: [
+    addressLineRules: [
       v => !!v || "Address line 1 is requried.",
       v =>
         (v && v.length >= 1 && v.length <= 25) ||
         "Address must be between 1 and 25 characters"
     ],
-    addressLine2Rules: [
-      v =>
-        /^[a-zA-Z]{0,25}$/.test(v) ||
-        "Address must be between 0 and 25 characters"
-    ],
+
     cityRules: [
       v => !!v || "City is requried",
       v =>
@@ -94,8 +88,7 @@ export default {
     countryRules: [v => !!v || "Country is requried"],
 
     addressForm: {
-      addressLine1: null,
-      addressLine2: null,
+      addressLine: null,
       city: null,
       state: null,
       zip: null,

@@ -5,6 +5,31 @@ import "firebase/auth";
 let auth = firebase.auth();
 
 const actions = {
+  updateEmail: async ({}, payload) => {
+    const user = auth.currentUser;
+    const email = payload.email;
+
+    return await user
+      .updateEmail(email)
+      .then(() => {
+        return { status: "success" };
+      })
+      .catch(error => {
+        return { status: "fail", errorMessage: error };
+      });
+  },
+  updatePassword: async ({}, payload) => {
+    const user = auth.currentUser;
+    const newPassword = payload.password;
+    return await user
+      .updatePassword(newPassword)
+      .then(() => {
+        return { status: "success" };
+      })
+      .catch(error => {
+        return { status: "fail", errorMessage: error };
+      });
+  },
   listenToAuthStateChanged: async ({ commit }) => {
     await auth.onAuthStateChanged(async user => {
       if (user) {
@@ -25,7 +50,6 @@ const actions = {
       .createUserWithEmailAndPassword(email, password)
       .then(userCredential => {
         const user = userCredential.user;
-        console.log(userCredential);
         return { status: "success", user };
       })
       .catch(error => {
@@ -45,7 +69,7 @@ const actions = {
           .signInWithEmailAndPassword(email, password)
           .then(userCredential => {
             const user = userCredential.user;
-            return { status: "success", user };
+            return { status: "success", user, userCredential };
           })
           .catch(error => {
             var errorCode = error.code;
