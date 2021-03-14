@@ -28,7 +28,7 @@
 
       <router-view />
     </v-main>
-    <Footer />
+    <!-- <Footer /> -->
   </v-app>
 </template>
 
@@ -42,7 +42,7 @@ export default {
   },
   components: {
     Header: () => import("@/components/layouts/Header"),
-    Footer: () => import("@/components/layouts/Footer"),
+    // Footer: () => import("@/components/layouts/Footer"),
     Sidebar: () => import("@/components/layouts/Sidebar"),
     SnackBar: () => import("@/components/layouts/SnackBar"),
     Loading: () => import("@/components/layouts/Loading"),
